@@ -7,7 +7,7 @@ import { ActionPanel } from './ActionPanel';
 import { useStudioStore } from '../../store/useStudioStore';
 
 export function StudioLayout() {
-  const { isLive, incrementStreamTimer } = useStudioStore();
+  const { isLive, incrementStreamTimer, cutToPreview, toggleLive } = useStudioStore();
 
   useEffect(() => {
     let interval: any;
@@ -16,6 +16,28 @@ export function StudioLayout() {
     }
     return () => clearInterval(interval);
   }, [isLive, incrementStreamTimer]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)) return;
+      
+      switch (e.key.toLowerCase()) {
+        case '1':
+        case '2':
+          cutToPreview();
+          break;
+        case 'l':
+          if (!isLive) toggleLive();
+          break;
+        case 's':
+          if (isLive) toggleLive();
+          break;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [cutToPreview, toggleLive, isLive]);
 
   return (
     <div className="w-screen h-screen flex flex-col bg-[#0A0B0E] p-4 text-[#E0E0E0] overflow-hidden">

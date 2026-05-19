@@ -1,4 +1,17 @@
+import { useRef, useEffect } from 'react';
 import { useStudioStore, CameraFeed } from '../../store/useStudioStore';
+
+function VideoPlayer({ stream, className }: { stream: MediaStream; className?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
+
+  return <video ref={videoRef} autoPlay playsInline muted className={className} />;
+}
 
 function PreviewCard({ camera, isActive }: { camera: CameraFeed; isActive: boolean; key?: string }) {
   const { setActiveCamera } = useStudioStore();
@@ -15,7 +28,9 @@ function PreviewCard({ camera, isActive }: { camera: CameraFeed; isActive: boole
         ${isPoorSignal ? 'opacity-70' : ''}
       `}
     >
-      {camera.mockUrl ? (
+      {camera.stream ? (
+        <VideoPlayer stream={camera.stream} className="w-full h-full object-cover" />
+      ) : camera.mockUrl ? (
         <img src={camera.mockUrl} alt={camera.name} className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full bg-black/80 flex flex-col items-center justify-center gap-2">
@@ -64,7 +79,7 @@ function PreviewCard({ camera, isActive }: { camera: CameraFeed; isActive: boole
 }
 
 export function PreviewGrid() {
-  const { cameras, activeCameraId } = useStudioStore();
+  const { cameras, activeCameraId, addLocalCamera } = useStudioStore();
   
   return (
     <>
@@ -76,7 +91,10 @@ export function PreviewGrid() {
           ))}
 
           {/* Add Camera Slot */}
-          <div className="relative aspect-video rounded-lg overflow-hidden border border-white/10 cursor-pointer transition-all border-dashed hover:border-white/30 hover:bg-white/5">
+          <div 
+            onClick={addLocalCamera}
+            className="relative aspect-video rounded-lg overflow-hidden border border-white/10 cursor-pointer transition-all border-dashed hover:border-white/30 hover:bg-white/5"
+          >
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 opacity-50">
               <span className="material-symbols-outlined">add_circle</span>
               <span className="text-[8px] uppercase font-bold tracking-widest text-center mt-1">Add Codec /<br/>Local Cam</span>

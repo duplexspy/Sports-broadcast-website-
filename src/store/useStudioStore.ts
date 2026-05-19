@@ -7,10 +7,11 @@ export type AppView = 'studio' | 'overlayBuilder';
 export interface CameraFeed {
   id: string;
   name: string;
-  type: 'main' | 'goal' | 'audience' | 'commentary' | 'replay';
+  type: 'main' | 'goal' | 'audience' | 'commentary' | 'replay' | 'local';
   status: 'online' | 'offline' | 'connecting';
-  battery: number;
+  battery?: number;
   mockUrl?: string;
+  stream?: MediaStream;
   connectedAt?: Date;
 }
 
@@ -59,6 +60,8 @@ interface StudioState {
   // Graphics
   activeGraphic: 'none' | 'goal' | 'lowerThird' | 'replay';
   triggerGraphic: (type: 'none' | 'goal' | 'lowerThird' | 'replay') => void;
+  
+  addLocalCamera: () => Promise<void>;
 }
 
 const mockCameras: CameraFeed[] = [
@@ -117,4 +120,22 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       }, 4000);
     }
   },
+
+  addLocalCamera: async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      const newCam: CameraFeed = {
+        id: `cam-local-${Date.now()}`,
+        name: 'Local Cam',
+        type: 'local',
+        status: 'online',
+        battery: 100,
+        stream: stream,
+      };
+      set((state) => ({ cameras: [...state.cameras, newCam] }));
+    } catch (e) {
+      console.error('Error accessing local camera', e);
+      alert('Could not access local camera.');
+    }
+  }
 }));
