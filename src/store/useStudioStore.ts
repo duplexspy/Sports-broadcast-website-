@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 
-export type SportType = 'football' | 'basketball' | 'tennis' | 'mma' | 'volleyball' | 'kabaddi' | 'hockey';
+export type SportType = 'football' | 'basketball' | 'tennis' | 'mma' | 'volleyball' | 'kabaddi' | 'hockey' | 'badminton' | 'tableTennis';
+
+export type AppView = 'studio' | 'overlayBuilder';
 
 export interface CameraFeed {
   id: string;
@@ -29,6 +31,8 @@ interface ScoreData {
 }
 
 interface StudioState {
+  view: AppView;
+  setView: (view: AppView) => void;
   sport: SportType;
   setSport: (sport: SportType) => void;
   
@@ -65,6 +69,8 @@ const mockCameras: CameraFeed[] = [
 ];
 
 export const useStudioStore = create<StudioState>((set, get) => ({
+  view: 'studio',
+  setView: (view) => set({ view }),
   sport: 'football',
   setSport: (sport) => set({ sport }),
   

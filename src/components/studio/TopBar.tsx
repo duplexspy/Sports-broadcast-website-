@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Wifi, Battery, Radio, Settings, Activity } from 'lucide-react';
 import { useStudioStore } from '../../store/useStudioStore';
 
 export function TopBar() {
@@ -20,45 +19,64 @@ export function TopBar() {
   };
 
   return (
-    <div className="h-12 w-full bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 fixed top-0 z-50">
-      <div className="flex items-center gap-6">
-        <h1 className="font-display font-bold text-xl tracking-wide flex items-center gap-2">
-          <span className="text-blue-500">PRO</span>CASTER
-        </h1>
-        
-        <div className="flex items-center gap-2 bg-zinc-950 px-3 py-1.5 rounded-full border border-zinc-800">
-          <Activity size={14} className="text-zinc-400" />
-          <span className="text-xs font-mono text-zinc-400">1080p60</span>
-          <span className="text-xs font-mono text-zinc-400 ml-2">6.2 MB/s</span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-6">
-        {isLive && (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-red-500/10 text-red-500 px-3 py-1 rounded-full animate-pulse border border-red-500/20">
-              <div className="w-2 h-2 rounded-full bg-red-500" />
-              <span className="text-sm font-bold tracking-widest uppercase">Live</span>
-            </div>
-            <span className="font-mono text-sm">{formatStreamTime(streamTimer)}</span>
+    <header className="flex items-center justify-between mb-4 px-2">
+      <div className="flex items-center gap-4">
+        {isLive ? (
+          <div className="flex items-center gap-2 bg-red-600 px-3 py-1 rounded-md">
+            <div className="w-2 h-2 bg-white rounded-full animate-[pulse_2s_infinite] opacity-100"></div>
+            <span className="text-xs font-black tracking-widest text-white uppercase">Live</span>
           </div>
+        ) : (
+          <h1 className="text-lg font-black tracking-widest uppercase italic bg-white/5 px-4 py-1 rounded-md border border-white/10 shrink-0">
+            <span className="text-[#00F5FF]">PRO</span>CASTER
+          </h1>
         )}
-
-        <div className="flex items-center gap-4 text-zinc-400">
-          <div className="flex items-center gap-1.5">
-            <Wifi size={16} className="text-green-500" />
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Battery size={16} />
-            <span className="text-xs font-mono">87%</span>
-          </div>
-          <div className="w-px h-4 bg-zinc-700" />
-          <span className="text-sm font-mono">{format(time, 'HH:mm:ss')}</span>
-          <button className="hover:text-white transition-colors">
-            <Settings size={18} />
-          </button>
+        <div className="hidden md:block">
+          {isLive ? (
+             <>
+               <h1 className="text-lg font-bold">LIVE BROADCAST</h1>
+               <p className="text-xs text-gray-400 font-mono uppercase tracking-[1px]">Main Feed Active</p>
+             </>
+          ) : (
+             <div className="flex items-center gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
+                <button 
+                  onClick={() => useStudioStore.getState().setView('studio')}
+                  className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors ${useStudioStore.getState().view === 'studio' ? 'bg-[#00F5FF]/20 text-[#00F5FF]' : 'text-gray-500 hover:text-white'}`}
+                >
+                  Live Studio
+                </button>
+                <button 
+                  onClick={() => useStudioStore.getState().setView('overlayBuilder')}
+                  className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors ${useStudioStore.getState().view === 'overlayBuilder' ? 'bg-[#00F5FF]/20 text-[#00F5FF]' : 'text-gray-500 hover:text-white'}`}
+                >
+                  Overlay Builder
+                </button>
+             </div>
+          )}
         </div>
       </div>
-    </div>
+
+      <div className="flex items-center gap-6">
+        <div className="text-center w-20">
+          <div className="stat-label">Bitrate</div>
+          <div className="text-sm font-mono text-[#00F5FF]">6.2 Mbps</div>
+        </div>
+        <div className="text-center w-20">
+          <div className="stat-label">Quality</div>
+          <div className="text-sm font-mono">1080p60</div>
+        </div>
+        <div className="text-center w-20">
+          <div className="stat-label">Duration</div>
+          <div className="text-sm font-mono">{isLive ? formatStreamTime(streamTimer) : '00:00:00'}</div>
+        </div>
+        
+        <div className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-full border border-white/10">
+          <div className="w-4 h-2 border border-white/40 rounded-sm relative">
+            <div className="absolute left-0 top-0 h-full bg-green-500" style={{width: '84%'}}></div>
+          </div>
+          <span className="text-[10px] font-bold">84%</span>
+        </div>
+      </div>
+    </header>
   );
 }

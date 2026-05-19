@@ -1,57 +1,41 @@
-import { Scissors, Layers, Trophy, Mic2, Tv } from 'lucide-react';
 import { useStudioStore } from '../../store/useStudioStore';
 
 export function ActionPanel() {
   const { cutToPreview, isLive, toggleLive, overlaysVisible, toggleOverlays } = useStudioStore();
 
   return (
-    <div className="flex flex-col gap-3 w-32 shrink-0">
-      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-2 flex flex-col gap-2 flex-1">
-        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest text-center py-1">Transition</div>
+    <div className="h-24 glass rounded-2xl flex items-center px-6 justify-between shrink-0">
+      <div className="flex gap-4">
         <button 
-          onClick={cutToPreview}
-          className="flex-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-lg flex flex-col items-center justify-center gap-1 transition-all border border-zinc-700/50"
+          onClick={toggleLive}
+          className={`h-12 w-12 rounded-full glass flex items-center justify-center transition-all ${isLive ? 'border-red-500/40 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] bg-red-500/10' : 'text-gray-400 hover:text-white'}`}
+          title={isLive ? "End Stream" : "Go Live"}
         >
-          <Scissors size={20} className="text-zinc-300" />
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">Cut</span>
+          <span className="material-symbols-outlined">{isLive ? 'stop_circle' : 'podcasts'}</span>
         </button>
-        <button 
-          onClick={cutToPreview}
-          className="flex-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-lg flex flex-col items-center justify-center gap-1 transition-all border border-zinc-700/50"
-        >
-          <Layers size={20} className="text-zinc-300" />
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">Auto</span>
-        </button>
-      </div>
-
-      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-2 flex flex-col gap-2">
         <button 
           onClick={toggleOverlays}
-          className={`h-12 rounded-lg flex items-center justify-center gap-2 border transition-colors ${
-            overlaysVisible ? 'bg-blue-600/20 text-blue-400 border-blue-500/30' : 'bg-zinc-800 text-zinc-400 border-zinc-700/50'
-          }`}
+          className={`h-12 w-12 rounded-full glass flex items-center justify-center transition-all ${overlaysVisible ? 'border-[#00F5FF]/40 text-[#00F5FF] bg-[#00F5FF]/10 shadow-[0_0_15px_rgba(0,245,255,0.2)]' : 'text-gray-400 hover:text-white'}`}
+          title="Toggle Overlays"
         >
-          <Trophy size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-wider">Overlays</span>
-        </button>
-        <button 
-          className="h-12 rounded-lg flex items-center justify-center gap-2 border bg-zinc-800/80 text-zinc-300 border-zinc-700/50 hover:bg-zinc-700 transition-colors"
-        >
-          <Mic2 size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-wider">Mixer</span>
+          <span className="material-symbols-outlined">layers</span>
         </button>
       </div>
 
-      <button 
-        onClick={toggleLive}
-        className={`h-20 rounded-xl flex flex-col items-center justify-center gap-1 font-bold uppercase tracking-wider transition-all border-2 shadow-xl ${
-          isLive 
-            ? 'bg-red-500 hover:bg-red-600 text-white border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' 
-            : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'
-        }`}
-      >
-        <Tv size={24} />
-        <span className="text-sm mt-1">{isLive ? 'End Stream' : 'Go Live'}</span>
+      <div className="flex-1 flex justify-center gap-2 mx-8">
+        <button onClick={cutToPreview} className="flex-1 py-3 rounded-lg glass text-[10px] font-bold uppercase tracking-widest border-white/5 hover:bg-white/10 transition-colors">
+          Cut
+        </button>
+        <button onClick={cutToPreview} className="flex-1 py-3 rounded-lg btn-active text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all border border-[#00F5FF]/50 shadow-[0_0_15px_rgba(0,245,255,0.4)]">
+          Auto
+        </button>
+        <button onClick={cutToPreview} className="flex-1 py-3 rounded-lg glass text-[10px] font-bold uppercase tracking-widest border-white/5 hover:bg-white/10 transition-colors">
+          Sports Wipe
+        </button>
+      </div>
+
+      <button className="px-6 py-3 rounded-xl bg-orange-600 font-black text-xs uppercase italic tracking-widest shadow-[0_0_20px_rgba(234,88,12,0.4)] hover:bg-orange-500 transition-colors border border-orange-400/50">
+        Instant Replay
       </button>
     </div>
   );
